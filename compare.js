@@ -12,7 +12,7 @@ let firstOperand = '';
 let secondOperand = '';
 let arithmeticOperator = '';
 let currentResult = 0;
-let memoryValue = '';
+let memory = '';
 
 // Functions
 /* decimal check function */
@@ -27,8 +27,8 @@ const addDecimalToOperand = (operand) => {
 /* arithmetic operation function */
 const arithmeticOperationCalculator = (
   firstOperand,
-  arithmeticOperator,
-  secondOperand
+  secondOperand,
+  arithmeticOperator
 ) => {
   let arithmeticOperationResult = 0;
   firstOperand = parseFloat(firstOperand);
@@ -83,13 +83,13 @@ numberButtons.forEach((numberButton) => {
 
 arithmeticOperatorButtons.forEach((arithmeticOperatorButton) => {
   arithmeticOperatorButton.addEventListener('click', (e) => {
-    if (firstOperand && arithmeticOperator && secondOperand) {
+    if (firstOperand && secondOperand && arithmeticOperator) {
       // continuous operation feature
       currentResult = parseFloat(
         arithmeticOperationCalculator(
           firstOperand,
-          arithmeticOperator,
-          secondOperand
+          secondOperand,
+          arithmeticOperator
         ).toFixed(3)
       );
       calculatorDisplay.textContent = currentResult;
@@ -99,7 +99,7 @@ arithmeticOperatorButtons.forEach((arithmeticOperatorButton) => {
     } else if (firstOperand) {
       arithmeticOperator = e.target.textContent;
     } else if (!firstOperand) {
-      firstOperand = currentResult.toString();
+      firstOperand = currentResult.toString(); // accounts for zero i.e. 7 - 7 = 0 - 7 = -7
       arithmeticOperator = e.target.textContent;
     }
   });
@@ -110,8 +110,8 @@ equationSolver.addEventListener('click', () => {
     currentResult = parseFloat(
       arithmeticOperationCalculator(
         firstOperand,
-        arithmeticOperator,
-        secondOperand
+        secondOperand,
+        arithmeticOperator
       ).toFixed(3)
     );
     calculatorDisplay.textContent = currentResult;
@@ -121,27 +121,19 @@ equationSolver.addEventListener('click', () => {
 
 memoryButtons.forEach((memoryButton) => {
   memoryButton.addEventListener('click', (e) => {
-    let memoryButton = e.target.textContent;
-    switch (memoryButton) {
+    switch (e.target.textContent) {
       case 'm+':
-        if (firstOperand) {
-          memoryValue = calculatorDisplay.textContent;
-        }
+        memory = parseFloat(calculatorDisplay.textContent).toFixed(3);
         break;
       case 'm-':
-        memoryValue = '';
+        memory = '';
         break;
       case 'mr':
-        if (arithmeticOperator) {
-          if (secondOperand) {
-            return;
-          }
-          secondOperand = memoryValue;
-        } else {
-          firstOperand = memoryValue;
-        }
-        calculatorDisplay.textContent = memoryValue;
+        firstOperand = memory;
+        calculatorDisplay.textContent = memory;
         break;
     }
   });
 });
+
+// Continuous Operation
